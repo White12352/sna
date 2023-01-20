@@ -35,7 +35,7 @@ jobs:
           sudo apt -y update
           sudo apt -y install curl git build-essential libssl-dev zlib1g-dev
           wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
-          tarzxvf libevent-2.1.12-stable.tar.gz
+          tar -zxvf libevent-2.1.12-stable.tar.gz
           cd libevent-2.1.12-stable.tar.gz
           ./configure
           make
