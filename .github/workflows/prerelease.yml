@@ -34,9 +34,10 @@ jobs:
         run: |
           sudo apt -y update
           sudo apt -y install curl git build-essential libssl-dev libevent-dev zlib1g-dev
-          git clone https://github.com/libevent/libevent.git
           sudo apt-get install cmake
-          mkdir build && cd build
+          mkdir build
+          cd build
+          git clone https://github.com/libevent/libevent.git
           cmake ..
           make
           sudo make install
