@@ -67,7 +67,7 @@ jobs:
           pushd build
           go mod init build
           go get -v berty.tech/go-libtor
-          go get -v github.com/sagernet/sing-box@$version
+          go get -v github.com/sagernet/sing-box@1.1.4
           popd
         continue-on-error: true
       
