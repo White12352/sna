@@ -39,7 +39,7 @@ jobs:
           cd libevent-2.1.12-stable
           ./configure
           make
-          make install
+          sudo make install
           cd ..
       
       - name: Set ENV
