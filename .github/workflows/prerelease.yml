@@ -60,6 +60,16 @@ jobs:
             ~/go/pkg/mod
           key: go-${{ hashFiles('**/go.sum') }}
       
+      - name: Add cache to Go proxy
+        run: |
+          version=`git rev-parse HEAD`
+          mkdir build
+          pushd build
+          go mod init build
+          go get -v github.com/sagernet/sing-box@$version
+          popd
+        continue-on-error: true
+      
       - name: Test
         if: ${{ github.ref_name=='debug' && matrix.job.id=='1' && matrix.job.type=='WithoutCGO' }}
         run: |
