@@ -66,6 +66,7 @@ jobs:
           mkdir build
           pushd build
           go mod init build
+          go mod tidy
           go get -v github.com/berty/go-libtor
           go get -v github.com/sagernet/sing-box@v1.1.4
           popd
@@ -123,6 +124,7 @@ jobs:
           NAME: sing-box
         run: |
           mkdir dist
+          go mod tidy -v
           xgo -v --branch ${{ github.ref_name }} --targets="${{ matrix.job.target }}" --tags="${TAGS}" -ldflags="${LDFLAGS}" --out dist/${NAME} github.com/${{ github.repository }}/cmd/sing-box
 
       - name: Rename
