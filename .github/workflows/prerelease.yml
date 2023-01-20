@@ -33,7 +33,7 @@ jobs:
       - name: Initialization environment
         run: |
           sudo apt -y update
-          sudo apt -y install curl git build-essential libssl-dev libevent-dev zlib1g-dev libtor-dev
+          sudo apt -y install curl git build-essential libssl-dev libevent-dev zlib1g-dev
       
       - name: Set ENV
         run: |
@@ -66,6 +66,7 @@ jobs:
           mkdir build
           pushd build
           go mod init build
+          go get -v libtor
           go get -v github.com/sagernet/sing-box@$version
           popd
         continue-on-error: true
