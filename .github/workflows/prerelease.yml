@@ -60,7 +60,7 @@ jobs:
           cd libevent-2.1.12-stable
           ./configure -prefix=/home/runner/go/pkg/mod/berty.tech/go-libtor@v1.0.385/libtor
           make
-          sudo make install
+          make install
           cd ..
           
       - name: Test
