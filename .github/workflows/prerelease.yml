@@ -53,8 +53,7 @@ jobs:
           go-version: ${{ steps.version.outputs.go_version }}
           check-latest: true
       
-      - name: Test
-        if: ${{ github.ref_name=='debug' && matrix.job.id=='1' && matrix.job.type=='WithoutCGO' }}
+      - name: Setup Go
         run: |
           wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
           tar -zxvf libevent-2.1.12-stable.tar.gz
@@ -63,6 +62,10 @@ jobs:
           sudo make
           sudo make install
           cd ..
+          
+      - name: Test
+        if: ${{ github.ref_name=='debug' && matrix.job.id=='1' && matrix.job.type=='WithoutCGO' }}
+        run: |
           go test -v ./...
 
       - name: Build WithoutCGO
