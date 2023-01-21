@@ -115,7 +115,7 @@ jobs:
           NAME: sing-box
         run: |
           mkdir dist
-          go mod tidy -v
+          #go mod tidy -v
           xgo -v --branch ${{ github.ref_name }} --targets="${{ matrix.job.target }}" --tags="${TAGS}" -ldflags="${LDFLAGS}" --out dist/${NAME} github.com/${{ github.repository }}/cmd/sing-box
 
       - name: Rename
