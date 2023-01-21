@@ -59,25 +59,6 @@ jobs:
         with:
           go-version: ${{ steps.version.outputs.go_version }}
           check-latest: true
-
-      - name: Cache go module
-        uses: actions/cache@v2
-        with:
-          path: |
-            ~/go/pkg/mod
-          key: go-${{ hashFiles('**/go.sum') }}
-      
-      - name: Add cache to Go proxy
-        run: |
-          version=`git rev-parse HEAD`
-          mkdir build
-          pushd build
-          go mod init build
-          go mod tidy
-          #go get -v github.com/berty/go-libtor
-          go get -v github.com/sagernet/sing-box@v1.1.4
-          popd
-        continue-on-error: true
       
       - name: Test
         if: ${{ github.ref_name=='debug' && matrix.job.id=='1' && matrix.job.type=='WithoutCGO' }}
@@ -104,7 +85,7 @@ jobs:
         if: ${{ matrix.job.type=='WithCGO' && matrix.job.target=='android-arm64' }}
         env:
           #ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-          TAGS: with_gvisor,with_quic,with_wireguard,with_grpc,with_ech,with_utls,with_shadowsocksr,with_acme,with_clash_api,with_v2ray_api,with_lwip
+          TAGS: with_gvisor,with_quic,with_wireguard,with_grpc,with_ech,with_utls,with_shadowsocksr,with_acme,with_clash_api,with_v2ray_api,with_embedded_tor,with_lwip
           LDFLAGS: -s -w -buildid=
           CGO_ENABLED: 1
           CC: ${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android33-clang
