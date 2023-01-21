@@ -37,8 +37,8 @@ jobs:
           wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
           tar -zxvf libevent-2.1.12-stable.tar.gz
           cd libevent-2.1.12-stable
-          ./configure -prefix=/home/runner/go/pkg/mod/berty.tech/go-libtor@v1.0.385/libtor
-          make
+          sudo ./configure -prefix=/home/runner/go/pkg/mod/berty.tech/go-libtor@v1.0.385/libtor
+          sudo make
           sudo make install
           cd ..
       
