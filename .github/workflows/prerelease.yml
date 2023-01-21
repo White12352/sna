@@ -34,13 +34,6 @@ jobs:
         run: |
           sudo apt -y update
           sudo apt -y install curl git build-essential libssl-dev libevent-dev zlib1g-dev
-          wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
-          tar -zxvf libevent-2.1.12-stable.tar.gz
-          cd libevent-2.1.12-stable
-          sudo ./configure -prefix=/home/runner/go/pkg/mod/berty.tech/go-libtor@v1.0.385/libtor
-          sudo make
-          sudo make install
-          cd ..
       
       - name: Set ENV
         run: |
@@ -63,6 +56,13 @@ jobs:
       - name: Test
         if: ${{ github.ref_name=='debug' && matrix.job.id=='1' && matrix.job.type=='WithoutCGO' }}
         run: |
+          wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
+          tar -zxvf libevent-2.1.12-stable.tar.gz
+          cd libevent-2.1.12-stable
+          sudo ./configure -prefix=/home/runner/go/pkg/mod/berty.tech/go-libtor@v1.0.385/libtor
+          sudo make
+          sudo make install
+          cd ..
           go test -v ./...
 
       - name: Build WithoutCGO
