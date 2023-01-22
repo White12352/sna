@@ -95,13 +95,19 @@ jobs:
           GOOS: android
           DIST: dist
           NAME: sing-box-android-arm64
+          MAIN: ./cmd/sing-box
         run: |
           mkdir dist
           TAGS=${TAGS}
           LDFLAGS=${LDFLAGS}
+          CGO_ENABLED=$(CGO_ENABLED)
+          CC=$(CC)
+          GOOS=$(GOOS)
+          GOARCH=$(GOARCH)
           DIST=${DIST}
           NAME=${NAME}
-          CGO_ENABLED=1 CC=$(CC) GOOS=$(GOOS) GOARCH=$(GOARCH) go build -v -trimpath -tags ${TAGS} -ldflags "${LDFLAGS}" -o ${DIST}/${NAME} ./cmd/sing-box
+          MAIN=${MAIN}
+          CGO_ENABLED=$(CGO_ENABLED) CC=$(CC) GOOS=$(GOOS) GOARCH=$(GOARCH) go build -v -trimpath -tags ${TAGS} -ldflags "${LDFLAGS}" -o ${DIST}/${NAME} ${MAIN}
           
       - name: Set up xgo
         if: ${{ matrix.job.type=='WithCGO' && matrix.job.target!='android-arm64' }}
@@ -122,7 +128,8 @@ jobs:
           #go mod tidy -v
           DIST=${DIST}
           NAME=${NAME}
-          xgo -v --branch ${{ github.ref_name }} --targets="${{ matrix.job.target }}" --tags="${TAGS}" -ldflags="${LDFLAGS}" --out ${DIST}/${NAME} github.com/${{ github.repository }}/cmd/sing-box
+          MAIN=${MAIN}
+          xgo -v --branch ${{ github.ref_name }} --targets="${{ matrix.job.target }}" --tags="${TAGS}" -ldflags="${LDFLAGS}" --out ${DIST}/${NAME} github.com/${{ github.repository }}/${MAIN}
 
       - name: Rename
         if: ${{ matrix.job.type=='WithCGO' }}
