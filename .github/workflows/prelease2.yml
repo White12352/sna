@@ -14,6 +14,7 @@ jobs:
       matrix:
         job:
           - { type: "WithCGO", cc: "x86_64-w64-mingw32-gcc", goos: "windows", goarch: "amd64", goarm: "", name: sing-box-windows-4.0-amd64, id: "1" }
+          - { type: "WithCGO", cc: "i686-w64-mingw32-gcc", goos: "windows", goarch: "386", goarm: "", name: sing-box-windows-4.0-386, id: "2" }
 
     steps:
       - name: Check out code into the Go module directory
