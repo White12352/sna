@@ -100,10 +100,6 @@ jobs:
           mkdir dist
           TAGS=${TAGS}
           LDFLAGS=${LDFLAGS}
-          #CGO_ENABLED=$(CGO_ENABLED)
-          CC=$(CC)
-          GOOS=$(GOOS)
-          GOARCH=$(GOARCH)
           DIST=${DIST}
           NAME=${NAME}
           MAIN=${MAIN}
