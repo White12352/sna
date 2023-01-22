@@ -91,7 +91,7 @@ jobs:
           #NAME: sing-box-windows-4.0-amd64
         run: |
           mkdir dist
-          CGO_ENABLED=$(CGO_ENABLED) CC=${{ matrix.job.cc }} GOOS=${{ matrix.job.goos }} GOARCH=${{ matrix.job.goarch }} GOARM=${{ matrix.job.goarm }} go build -v -trimpath -tags "$(TAGS)" -ldflags "${LDFLAGS}" -o dist/${NAME} ./cmd/sing-box
+          CGO_ENABLED=$(CGO_ENABLED) CC=${{ matrix.job.cc }} GOOS=${{ matrix.job.goos }} GOARCH=${{ matrix.job.goarch }} GOARM=${{ matrix.job.goarm }} go build -v -trimpath -tags "$(TAGS)" -ldflags "${LDFLAGS}" -o dist/${{ matrix.job.name }} ./cmd/sing-box
 
       - name: Rename
         if: ${{ matrix.job.type=='WithCGO' }}
