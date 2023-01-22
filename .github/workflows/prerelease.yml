@@ -102,7 +102,7 @@ jobs:
           NAME: sing-box
         run: |
           mkdir dist
-          CGO_ENABLED=$(CGO_ENABLED) CC=$(CC) GOOS=$(GOOS) GOARCH=$(GOARCH) go build -v -trimpath -tags $(TAGS) -ldflags "-s -w -buildid=" -o dist/${NAME}-android-arm64 ./cmd/sing-box
+          CGO_ENABLED=$(CGO_ENABLED) CC=$(CC) GOOS=$(GOOS) GOARCH=$(GOARCH) go build -v -trimpath -tags with_gvisor,with_quic,with_wireguard,with_grpc,with_ech,with_utls,with_shadowsocksr,with_acme,with_clash_api,with_v2ray_api,with_embedded_tor,with_lwip -ldflags "-s -w -buildid=" -o dist/${NAME}-android-arm64 ./cmd/sing-box
           
       - name: Set up xgo
         if: ${{ matrix.job.type=='WithCGO' && matrix.job.target!='android-arm64' }}
