@@ -70,10 +70,11 @@ jobs:
       - name: Build WithoutCGO
         if: ${{ matrix.job.type=='WithoutCGO' }}
         env:
-          NAME: sing-box
           TAGS: with_gvisor
-          #MAIN: ./cmd/sing-box
-        run: make -j$(($(nproc) + 1)) ${{ matrix.job.target }}
+        run: |
+          mkdir dist
+          TAGS=${TAGS} 
+          make -j$(($(nproc) + 1)) ${{ matrix.job.target }}
 
       - uses: nttld/setup-ndk@v1
         if: ${{ matrix.job.type=='WithCGO' && matrix.job.target=='android-arm64' }}
@@ -203,9 +204,11 @@ jobs:
       - name: Build WithoutCGO
         if: ${{ matrix.job.type=='WithoutCGO' }}
         env:
-          NAME: sing-box
           TAGS: with_gvisor
-        run: make -j$(($(nproc) + 1)) ${{ matrix.job.target }}
+        run: |
+          mkdir dist
+          TAGS=${TAGS} 
+          make -j$(($(nproc) + 1)) ${{ matrix.job.target }}
 
       - uses: nttld/setup-ndk@v1
         if: ${{ matrix.job.type=='WithCGO' && matrix.job.target=='android-arm-7' }}
@@ -226,10 +229,17 @@ jobs:
           GOARCH: arm
           GOOS: android
           GOARM: 7
-          NAME: sing-box
+          DIST: dist
+          NAME: sing-box-android-arm-7
+          MAIN: ./cmd/sing-box
         run: |
           mkdir dist
-          CGO_ENABLED=$(CGO_ENABLED) CC=$(CC) GOOS=$(GOOS) GOARCH=$(GOARCH) GOARM=$(GOARM) go build -v -trimpath -tags $(TAGS) -ldflags "${LDFLAGS}" -o dist/${NAME}-android-arm-7 ./cmd/sing-box
+          TAGS=${TAGS}
+          LDFLAGS=${LDFLAGS}
+          DIST=${DIST}
+          NAME=${NAME}
+          MAIN=${MAIN}
+          CGO_ENABLED=$(CGO_ENABLED) CC=$(CC) GOOS=$(GOOS) GOARCH=$(GOARCH) GOARM=$(GOARM) go build -v -trimpath -tags $(TAGS) -ldflags "${LDFLAGS}" -o ${DIST}/${NAME} ${MAIN}
         
       - name: Set up xgo
         if: ${{ matrix.job.type=='WithCGO' && matrix.job.target!='android-arm-7' }}
@@ -241,13 +251,20 @@ jobs:
         if: ${{ matrix.job.type=='WithCGO' && matrix.job.target!='android-arm-7' }}
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-          TAGS: with_gvisor,with_quic,with_wireguard,with_grpc,with_ech,with_utls,with_shadowsocksr,with_acme,with_clash_api,with_v2ray_api,with_embedded_tor,with_lwip
+          TAGS: with_gvisor,with_quic,with_wireguard,with_grpc,with_ech,with_utls,with_shadowsocksr,with_acme,with_clash_api,with_v2ray_api,with_lwip
           LDFLAGS: -s -w -buildid=
-          MAIN: cmd/sing-box
+          DIST: dist
           NAME: sing-box
+          MAIN: cmd/sing-box
         run: |
           mkdir dist
-          xgo -v --branch ${{ github.ref_name }} --targets="${{ matrix.job.target }}" --tags="${TAGS}" -ldflags="${LDFLAGS}" --out dist/${NAME} github.com/${{ github.repository }}/cmd/sing-box
+          #go mod tidy -v
+          TAGS=${TAGS}
+          LDFLAGS=${LDFLAGS}
+          DIST=${DIST}
+          NAME=${NAME}
+          MAIN=${MAIN}
+          xgo -v --branch ${{ github.ref_name }} --targets="${{ matrix.job.target }}" --tags="${TAGS}" -ldflags="${LDFLAGS}" --out ${DIST}/${NAME} github.com/${{ github.repository }}/${MAIN}
 
       - name: Rename
         if: ${{ matrix.job.type=='WithCGO' }}
