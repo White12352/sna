@@ -37,7 +37,6 @@ jobs:
       
       - name: Set ENV
         run: |
-          echo "NAME=sing-box" >> $GITHUB_ENV
           echo "REPO=${{ github.repository }}" >> $GITHUB_ENV
           echo "ShortSHA=$(git rev-parse --short ${{ github.sha }})" >> $GITHUB_ENV
         shell: bash
@@ -53,15 +52,15 @@ jobs:
           go-version: ${{ steps.version.outputs.go_version }}
           check-latest: true
       
-      - name: Setup Libevent
-        run: |
-          wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
-          tar -zxvf libevent-2.1.12-stable.tar.gz
-          cd libevent-2.1.12-stable
-          ./configure -prefix=/home/runner/go/pkg/mod/berty.tech/go-libtor@v1.0.385/libtor
-          make
-          make install
-          cd ..
+      #- name: Setup Libevent
+        #run: |
+          #wget https://github.com/libevent/libevent/releases/download/release-2.1.12-stable/libevent-2.1.12-stable.tar.gz
+          #tar -zxvf libevent-2.1.12-stable.tar.gz
+          #cd libevent-2.1.12-stable
+          #./configure -prefix=/home/runner/go/pkg/mod/berty.tech/go-libtor@v1.0.385/libtor
+          #make
+          #make install
+          #cd ..
           
       - name: Test
         if: ${{ github.ref_name=='debug' && matrix.job.id=='1' && matrix.job.type=='WithoutCGO' }}
@@ -83,27 +82,26 @@ jobs:
           ndk-version: r25b
           add-to-path: false
           local-cache: true
-
-      - name: Set ENV
-        run: |
-          echo "LDFLAGS=-s -w -buildid=" >> $GITHUB_ENV
-        shell: bash
       
       - name: Build Android
         if: ${{ matrix.job.type=='WithCGO' && matrix.job.target=='android-arm64' }}
         env:
           #ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-          TAGS: with_gvisor,with_quic,with_wireguard,with_grpc,with_ech,with_utls,with_shadowsocksr,with_acme,with_clash_api,with_v2ray_api,with_embedded_tor,with_lwip
-          #LDFLAGS: "'-s -w -buildid='"
+          TAGS: with_gvisor,with_quic,with_wireguard,with_grpc,with_ech,with_utls,with_shadowsocksr,with_acme,with_clash_api,with_v2ray_api,with_lwip
+          LDFLAGS: -s -w -buildid=
           CGO_ENABLED: 1
           CC: ${{ steps.setup-ndk.outputs.ndk-path }}/toolchains/llvm/prebuilt/linux-x86_64/bin/aarch64-linux-android33-clang
           GOARCH: arm64
           GOOS: android
-          NAME: sing-box
+          DIST: dist
+          NAME: sing-box-android-arm64
         run: |
           mkdir dist
           TAGS=${TAGS}
-          CGO_ENABLED=$(CGO_ENABLED) CC=$(CC) GOOS=$(GOOS) GOARCH=$(GOARCH) go build -v -trimpath -tags ${TAGS} -ldflags "-s -w -buildid=" -o dist/${NAME}-android-arm64 ./cmd/sing-box
+          LDFLAGS=${LDFLAGS}
+          DIST=${DIST}
+          NAME=${NAME}
+          CGO_ENABLED=$(CGO_ENABLED) CC=$(CC) GOOS=$(GOOS) GOARCH=$(GOARCH) go build -v -trimpath -tags ${TAGS} -ldflags "${LDFLAGS}" -o ${DIST}/${NAME} ./cmd/sing-box
           
       - name: Set up xgo
         if: ${{ matrix.job.type=='WithCGO' && matrix.job.target!='android-arm64' }}
@@ -115,14 +113,16 @@ jobs:
         if: ${{ matrix.job.type=='WithCGO' && matrix.job.target!='android-arm64' }}
         env:
           ANDROID_NDK_HOME: ${{ steps.setup-ndk.outputs.ndk-path }}
-          TAGS: with_gvisor,with_quic,with_wireguard,with_grpc,with_ech,with_utls,with_shadowsocksr,with_acme,with_clash_api,with_v2ray_api,with_embedded_tor,with_lwip
+          TAGS: with_gvisor,with_quic,with_wireguard,with_grpc,with_ech,with_utls,with_shadowsocksr,with_acme,with_clash_api,with_v2ray_api,with_lwip
           #LDFLAGS: -s -w -buildid=
           MAIN: cmd/sing-box
           NAME: sing-box
         run: |
           mkdir dist
           #go mod tidy -v
-          xgo -v --branch ${{ github.ref_name }} --targets="${{ matrix.job.target }}" --tags="${TAGS}" -ldflags="${LDFLAGS}" --out dist/${NAME} github.com/${{ github.repository }}/cmd/sing-box
+          DIST=${DIST}
+          NAME=${NAME}
+          xgo -v --branch ${{ github.ref_name }} --targets="${{ matrix.job.target }}" --tags="${TAGS}" -ldflags="${LDFLAGS}" --out ${DIST}/${NAME} github.com/${{ github.repository }}/cmd/sing-box
 
       - name: Rename
         if: ${{ matrix.job.type=='WithCGO' }}
