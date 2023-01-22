@@ -13,7 +13,7 @@ jobs:
       fail-fast: false
       matrix:
         job:
-          - { type: "WithCGO", cc: "x86_64-w64-mingw32-gcc", id: "1" }
+          - { type: "WithCGO", cc: "x86_64-w64-mingw32-gcc", goos: "windows", goarch: "amd64", goarm: "", name: sing-box-windows-4.0-amd64, id: "1" }
 
     steps:
       - name: Check out code into the Go module directory
@@ -86,12 +86,12 @@ jobs:
           LDFLAGS: -s -w -buildid=
           CGO_ENABLED: 1
           #CC: x86_64-w64-mingw32-gcc
-          GOARCH: amd64
-          GOOS: windows
-          NAME: sing-box
+          #GOARCH: amd64
+          #GOOS: windows
+          #NAME: sing-box-windows-4.0-amd64
         run: |
           mkdir dist
-          CGO_ENABLED=$(CGO_ENABLED) GOOS=$(GOOS) GOARCH=$(GOARCH) go build -v -trimpath -tags "$(TAGS)" -ldflags "${LDFLAGS}" -o dist/${NAME}-windows-4.0-amd64 ./cmd/sing-box
+          CGO_ENABLED=$(CGO_ENABLED) CC=${{ matrix.job.cc }} GOOS=${{ matrix.job.goos }} GOARCH=${{ matrix.job.goarch }} GOARM=${{ matrix.job.goarm }} go build -v -trimpath -tags "$(TAGS)" -ldflags "${LDFLAGS}" -o dist/${NAME} ./cmd/sing-box
 
       - name: Rename
         if: ${{ matrix.job.type=='WithCGO' }}
