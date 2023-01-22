@@ -15,6 +15,9 @@ do
     elif [[ $FILENAME =~ "windows-4.0-amd64" ]];then
         echo "rename windows amd64 $FILENAME"
         mv $FILENAME sing-box-windows-amd64-cgo.exe
+    elif [[ $FILENAME =~ "windows-amd64-gui" ]];then
+        echo "rename windows amd64 gui $FILENAME"
+        mv $FILENAME sing-box-windows-amd64-gui-cgo.exe
     elif [[ $FILENAME =~ "linux" ]];then
         echo "rename linux $FILENAME"
         mv $FILENAME $FILENAME-cgo
