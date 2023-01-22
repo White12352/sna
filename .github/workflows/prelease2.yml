@@ -92,7 +92,7 @@ jobs:
           #NAME: sing-box-windows-4.0-amd64
         run: |
           mkdir dist
-          CGO_ENABLED=1 CC=${{ matrix.job.cc }} GOOS=${{ matrix.job.goos }} GOARCH=${{ matrix.job.goarch }} GOARM=${{ matrix.job.goarm }} go build -v -trimpath -tags with_gvisor,with_quic,with_wireguard,with_grpc,with_ech,with_utls,with_shadowsocksr,with_acme,with_clash_api,with_v2ray_api,with_embedded_tor,with_lwip -ldflags ${LDFLAGS} -o dist/${{ matrix.job.name }} ./cmd/sing-box
+          CGO_ENABLED=1 CC=${{ matrix.job.cc }} GOOS=${{ matrix.job.goos }} GOARCH=${{ matrix.job.goarch }} GOARM=${{ matrix.job.goarm }} go build -v -trimpath -tags with_gvisor,with_quic,with_wireguard,with_grpc,with_ech,with_utls,with_shadowsocksr,with_acme,with_clash_api,with_v2ray_api,with_embedded_tor,with_lwip -ldflags "${LDFLAGS}" -o dist/${{ matrix.job.name }} ./cmd/sing-box
 
       - name: Rename
         if: ${{ matrix.job.type=='WithCGO' }}
