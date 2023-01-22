@@ -466,7 +466,7 @@ jobs:
 
   Upload:
     permissions: write-all
-    needs: [ Build, Build2 ]
+    needs: [ Build, Build2, Build3 ]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v3
