@@ -239,7 +239,7 @@ jobs:
           DIST=${DIST}
           NAME=${NAME}
           MAIN=${MAIN}
-          CGO_ENABLED=$(CGO_ENABLED) CC=$(CC) GOOS=$(GOOS) GOARCH=$(GOARCH) GOARM=$(GOARM) go build -v -trimpath -tags $(TAGS) -ldflags "${LDFLAGS}" -o ${DIST}/${NAME} ${MAIN}
+          CGO_ENABLED=$(CGO_ENABLED) CC=$(CC) GOOS=$(GOOS) GOARCH=$(GOARCH) GOARM=$(GOARM) go build -v -trimpath -tags ${TAGS} -ldflags "${LDFLAGS}" -o ${DIST}/${NAME} ${MAIN}
         
       - name: Set up xgo
         if: ${{ matrix.job.type=='WithCGO' && matrix.job.target!='android-arm-7' }}
